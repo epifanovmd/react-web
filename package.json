@@ -40,7 +40,7 @@
     "check-packages-updates": "yarn outdated"
   },
   "dependencies": {
-    "@force-dev/react": "^1.1.18",
+    "@force-dev/react": "^1.1.19",
     "@force-dev/utils": "^1.1.64",
     "@types/body-scroll-lock": "^3.1.2",
     "body-scroll-lock": "^4.0.0-beta.0",

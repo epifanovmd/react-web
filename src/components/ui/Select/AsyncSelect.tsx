@@ -1,0 +1,85 @@
+import * as React from "react";
+import { forwardRef, memo, useCallback, useMemo, useState } from "react";
+
+import { useAsyncSelect } from "./hooks";
+import { Select } from "./Select";
+import { IAsyncSelectProps, ISelectRef, TSelectMode } from "./types";
+
+const _AsyncSelect = <
+  V extends string | number | null,
+  SomeValues extends object,
+  Mode extends TSelectMode | undefined = undefined,
+  LabelInValue extends boolean | undefined = true,
+  ShowSearch extends boolean | undefined = true,
+>(
+  {
+    minQueryLength = 3,
+    fetchFn,
+    debounceTimeout = 300,
+    showSearch = true,
+    searchPlaceholder: _searchPlaceholder,
+    loadingPlaceholder = "Загрузка...",
+    onDropdownVisibleChange,
+    initialLoad,
+    ...props
+  }: IAsyncSelectProps<V, SomeValues, Mode, LabelInValue, ShowSearch> & {
+    ref?: React.LegacyRef<ISelectRef>;
+  },
+  ref: React.LegacyRef<ISelectRef>,
+) => {
+  const [open, setOpen] = useState(props.open);
+
+  const { options, setQuery, fetching, pending, searchPlaceholder } =
+    useAsyncSelect<V, SomeValues, Mode, ShowSearch>({
+      initialLoad,
+      fetchFn,
+      minQueryLength,
+      debounceTimeout,
+      showSearch,
+      open,
+    });
+
+  const loading = showSearch ? fetching : pending || fetching;
+  const placeholder = _searchPlaceholder ?? searchPlaceholder;
+
+  const handleOnDropdownVisibleChange = useCallback(
+    (open: boolean) => {
+      onDropdownVisibleChange?.(open);
+      setOpen(open);
+    },
+    [onDropdownVisibleChange],
+  );
+
+  const notFoundContent = useMemo(
+    () =>
+      fetching ? (
+        <div className={"user-select-none"}>{loadingPlaceholder}</div>
+      ) : (
+        <div className={"user-select-none"}>
+          {_searchPlaceholder ?? searchPlaceholder}
+        </div>
+      ),
+    [_searchPlaceholder, fetching, loadingPlaceholder, searchPlaceholder],
+  );
+
+  return (
+    <Select
+      ref={ref}
+      labelInValue={true as unknown as undefined}
+      loading={loading}
+      filterOption={false}
+      autoClearSearchValue={true}
+      showSearch={showSearch}
+      onSearch={showSearch ? setQuery : undefined}
+      placeholder={placeholder}
+      onDropdownVisibleChange={handleOnDropdownVisibleChange}
+      notFoundContent={notFoundContent}
+      options={options}
+      {...props}
+    />
+  );
+};
+
+export const AsyncSelect = memo(
+  forwardRef(_AsyncSelect),
+) as typeof _AsyncSelect;

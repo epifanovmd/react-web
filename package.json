@@ -42,6 +42,8 @@
   "dependencies": {
     "@force-dev/react": "^1.1.18",
     "@force-dev/utils": "^1.1.64",
+    "@types/body-scroll-lock": "^3.1.2",
+    "body-scroll-lock": "^4.0.0-beta.0",
     "rc-select": "^14.15.1",
     "rollup-plugin-postcss": "^4.0.2",
     "sass": "^1.77.8"

@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@force-dev/react": "^1.1.19",
-    "@force-dev/utils": "^1.1.77",
     "@types/body-scroll-lock": "^3.1.2",
     "body-scroll-lock": "^4.0.0-beta.0",
     "postcss": "^8.4.41",
@@ -51,7 +50,8 @@
   },
   "peerDependencies": {
     "lodash": "^4.17.21",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "@force-dev/utils": "^1.1.77"
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",

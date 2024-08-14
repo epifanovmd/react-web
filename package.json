@@ -1,6 +1,6 @@
 {
   "name": "@force-dev/react-web",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React web components library",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",

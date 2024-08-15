@@ -78,6 +78,8 @@ export const useAsyncSelect = <
   useEffect(() => {
     if (availableSearch) {
       fetchOptions(searchQuery).then();
+    } else {
+      setOptions([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);

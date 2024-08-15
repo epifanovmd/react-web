@@ -41,7 +41,6 @@ $dropdown_animation_duration: 0.1s;
   color: $color;
   font-family: $font_family;
   position: relative;
-  display: inline-block;
   cursor: pointer;
   width: 100%;
 
@@ -213,7 +212,6 @@ $dropdown_animation_duration: 0.1s;
 
 
                       &-content {
-                        display: inline-block;
                         margin-inline-end: 4px;
                         overflow: hidden;
                         white-space: pre;
@@ -399,7 +397,6 @@ $dropdown_animation_duration: 0.1s;
         inset-inline-start: auto;
         inset-inline-end: 11px;
         z-index: 1;
-        display: inline-block;
         width: 12px;
         height: 12px;
         margin-top: -6px;

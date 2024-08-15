@@ -10,7 +10,7 @@ export interface IUseAsyncSelectOptions<
   Mode extends TSelectMode | undefined = undefined,
   ShowSearch extends boolean | undefined = true,
 > {
-  initialLoad?: boolean;
+  fetchOnInit?: boolean;
   fetchFn: IAsyncSelectProps<
     V,
     SomeValues,
@@ -23,6 +23,7 @@ export interface IUseAsyncSelectOptions<
   showSearch?: boolean;
   searchPlaceholder?: string;
   open?: boolean;
+  filterOption?: boolean;
 }
 
 export const useAsyncSelect = <
@@ -31,17 +32,22 @@ export const useAsyncSelect = <
   Mode extends TSelectMode | undefined = undefined,
   ShowSearch extends boolean | undefined = true,
 >({
-  initialLoad,
+  fetchOnInit,
   fetchFn,
   minQueryLength,
   debounceTimeout = 300,
   showSearch,
   open,
+  filterOption,
 }: IUseAsyncSelectOptions<V, SomeValues, Mode, ShowSearch>) => {
   const [query, setQuery] = useDebouncedState("", debounceTimeout);
   const [options, setOptions] = useState<TSelectOption<V, SomeValues>[]>([]);
   const [pending, setPending] = useState(true);
   const [fetching, setFetching] = useState(false);
+
+  const searchQuery = query.trim();
+  const availableSearchLength = searchQuery.length >= minQueryLength;
+  const availableSearch = availableSearchLength && !filterOption;
 
   useEffect(() => {
     if (open !== undefined && !open && showSearch) {
@@ -49,8 +55,6 @@ export const useAsyncSelect = <
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
-
-  const searchQuery = query.trim();
 
   const fetchOptions = useCallback(
     async (q: string = "") => {
@@ -67,17 +71,14 @@ export const useAsyncSelect = <
   );
 
   useEffect(() => {
-    if (!showSearch || initialLoad) {
+    if (fetchOnInit) {
       fetchOptions().then();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchOnInit]);
 
   useEffect(() => {
-    if (
-      searchQuery.length >= minQueryLength ||
-      (initialLoad && searchQuery.length === 0)
-    ) {
+    if (availableSearch) {
       fetchOptions(searchQuery).then();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,5 +101,7 @@ export const useAsyncSelect = <
     query,
     setQuery,
     searchPlaceholder,
+    availableSearchLength,
+    availableSearch,
   };
 };

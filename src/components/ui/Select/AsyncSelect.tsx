@@ -20,7 +20,9 @@ const _AsyncSelect = <
     searchPlaceholder: _searchPlaceholder,
     loadingPlaceholder = "Загрузка...",
     onDropdownVisibleChange,
-    initialLoad,
+    fetchOnInit,
+    filterOption,
+    notFoundContent: _notFoundContent,
     ...props
   }: IAsyncSelectProps<V, SomeValues, Mode, LabelInValue, ShowSearch> & {
     ref?: React.LegacyRef<ISelectRef>;
@@ -29,15 +31,22 @@ const _AsyncSelect = <
 ) => {
   const [open, setOpen] = useState(props.open);
 
-  const { options, setQuery, fetching, pending, searchPlaceholder } =
-    useAsyncSelect<V, SomeValues, Mode, ShowSearch>({
-      initialLoad,
-      fetchFn,
-      minQueryLength,
-      debounceTimeout,
-      showSearch,
-      open,
-    });
+  const {
+    options,
+    setQuery,
+    fetching,
+    pending,
+    searchPlaceholder,
+    availableSearch,
+  } = useAsyncSelect<V, SomeValues, Mode, ShowSearch>({
+    fetchOnInit,
+    fetchFn,
+    minQueryLength,
+    debounceTimeout,
+    showSearch,
+    open,
+    filterOption: !!filterOption,
+  });
 
   const loading = showSearch ? fetching : pending || fetching;
   const placeholder = _searchPlaceholder ?? searchPlaceholder;
@@ -56,10 +65,21 @@ const _AsyncSelect = <
         <div className={"user-select-none"}>{loadingPlaceholder}</div>
       ) : (
         <div className={"user-select-none"}>
-          {_searchPlaceholder ?? searchPlaceholder}
+          {availableSearch || filterOption || !showSearch
+            ? _notFoundContent ?? "Нет данных"
+            : _searchPlaceholder ?? searchPlaceholder}
         </div>
       ),
-    [_searchPlaceholder, fetching, loadingPlaceholder, searchPlaceholder],
+    [
+      _notFoundContent,
+      _searchPlaceholder,
+      availableSearch,
+      fetching,
+      filterOption,
+      loadingPlaceholder,
+      searchPlaceholder,
+      showSearch,
+    ],
   );
 
   return (
@@ -67,7 +87,7 @@ const _AsyncSelect = <
       ref={ref}
       labelInValue={true as unknown as undefined}
       loading={loading}
-      filterOption={false}
+      filterOption={filterOption}
       autoClearSearchValue={true}
       showSearch={showSearch}
       onSearch={showSearch ? setQuery : undefined}

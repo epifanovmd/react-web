@@ -92,5 +92,5 @@ export interface IAsyncSelectProps<
   debounceTimeout?: number;
   searchPlaceholder?: string;
   loadingPlaceholder?: string;
-  initialLoad?: boolean;
+  fetchOnInit?: boolean;
 }

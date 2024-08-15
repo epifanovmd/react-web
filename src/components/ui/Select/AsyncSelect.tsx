@@ -3,7 +3,12 @@ import { forwardRef, memo, useCallback, useMemo, useState } from "react";
 
 import { useAsyncSelect } from "./hooks";
 import { Select } from "./Select";
-import { IAsyncSelectProps, ISelectRef, TSelectMode } from "./types";
+import {
+  IAsyncSelectProps,
+  ISelectRef,
+  TAllowClear,
+  TSelectMode,
+} from "./types";
 
 const _AsyncSelect = <
   V extends string | number | null,
@@ -11,6 +16,7 @@ const _AsyncSelect = <
   Mode extends TSelectMode | undefined = undefined,
   LabelInValue extends boolean | undefined = true,
   ShowSearch extends boolean | undefined = true,
+  AllowClear extends TAllowClear | undefined = undefined,
 >(
   {
     minQueryLength = 3,
@@ -24,9 +30,14 @@ const _AsyncSelect = <
     filterOption,
     notFoundContent: _notFoundContent,
     ...props
-  }: IAsyncSelectProps<V, SomeValues, Mode, LabelInValue, ShowSearch> & {
-    ref?: React.LegacyRef<ISelectRef>;
-  },
+  }: IAsyncSelectProps<
+    V,
+    SomeValues,
+    Mode,
+    LabelInValue,
+    ShowSearch,
+    AllowClear
+  >,
   ref: React.LegacyRef<ISelectRef>,
 ) => {
   const [open, setOpen] = useState(props.open);

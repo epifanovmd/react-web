@@ -6,13 +6,14 @@ import { forwardRef, memo } from "react";
 
 import { getValidateClassName, mergeAllowClear } from "./helpers";
 import { SelectCaretIcon } from "./icons";
-import { ISelectProps, ISelectRef, TSelectMode } from "./types";
+import { ISelectProps, ISelectRef, TAllowClear, TSelectMode } from "./types";
 
 const _Select = <
   V extends string | number | null,
   SomeValues extends object,
   Mode extends TSelectMode | undefined = undefined,
   LabelInValue extends boolean | undefined = undefined,
+  AllowClear extends TAllowClear | undefined = undefined,
 >(
   {
     allowClear,
@@ -21,9 +22,7 @@ const _Select = <
     valid,
     loading,
     ...rest
-  }: ISelectProps<V, SomeValues, Mode, LabelInValue> & {
-    ref?: React.LegacyRef<ISelectRef>;
-  },
+  }: ISelectProps<V, SomeValues, Mode, LabelInValue, AllowClear>,
   ref: React.LegacyRef<ISelectRef>,
 ) => {
   const mergedSuffixIcon = !loading
@@ -44,4 +43,4 @@ const _Select = <
   );
 };
 
-export const Select = memo(forwardRef(_Select)) as typeof _Select;
+export const Select = memo(forwardRef(_Select)) as unknown as typeof _Select;

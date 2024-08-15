@@ -1,4 +1,5 @@
 import { BaseSelectRef, SelectProps } from "rc-select";
+import * as React from "react";
 
 export type TSelectMode = "combobox" | "multiple" | "tags";
 
@@ -38,11 +39,18 @@ type TOptionWithMode<
 
 export type ISelectRef = BaseSelectRef;
 
+export type TAllowClear =
+  | boolean
+  | {
+      clearIcon?: React.ReactNode | ((props: any) => React.ReactNode);
+    };
+
 export interface ISelectProps<
   V extends string | number | null = string | number | null,
   SomeValues extends object = object,
   Mode extends TSelectMode | undefined = undefined,
   LabelInValue extends boolean | undefined = undefined,
+  AllowClear extends TAllowClear | undefined = undefined,
 > extends Omit<
     SelectProps<
       TResolveSelectValue<
@@ -51,7 +59,13 @@ export interface ISelectProps<
       >,
       TSelectOption<V, SomeValues>
     >,
-    "mode" | "options" | "defaultValue" | "value" | "onChange" | "labelInValue"
+    | "mode"
+    | "options"
+    | "defaultValue"
+    | "value"
+    | "onChange"
+    | "labelInValue"
+    | "allowClear"
   > {
   valid?: boolean;
 
@@ -65,13 +79,23 @@ export interface ISelectProps<
         Required<Pick<TSelectValue<V>, "value">>),
     Mode
   > | null;
-  onChange?: (
-    value: TResolveSelectValue<
-      LabelInValue extends true ? TSelectValue<V> : V,
-      Mode
-    >,
-    option: TOptionWithMode<TSelectOption<V, SomeValues>, Mode>,
-  ) => void;
+  allowClear?: AllowClear;
+  onChange?: AllowClear extends undefined
+    ? (
+        value: TResolveSelectValue<
+          LabelInValue extends true ? TSelectValue<V> : V,
+          Mode
+        >,
+        option: TOptionWithMode<TSelectOption<V, SomeValues>, Mode>,
+      ) => void
+    : (
+        value?: TResolveSelectValue<
+          LabelInValue extends true ? TSelectValue<V> : V,
+          Mode
+        >,
+        option?: TOptionWithMode<TSelectOption<V, SomeValues>, Mode>,
+      ) => void;
+  ref?: React.LegacyRef<ISelectRef>;
 }
 
 export interface IAsyncSelectProps<
@@ -80,8 +104,9 @@ export interface IAsyncSelectProps<
   Mode extends TSelectMode | undefined = undefined,
   LabelInValue extends boolean | undefined = undefined,
   ShowSearch extends boolean | undefined = undefined,
+  AllowClear extends TAllowClear | undefined = undefined,
 > extends Omit<
-    ISelectProps<V, SomeValues, Mode, LabelInValue>,
+    ISelectProps<V, SomeValues, Mode, LabelInValue, AllowClear>,
     "options" | "children" | "showSearch"
   > {
   showSearch?: ShowSearch;

@@ -31,24 +31,18 @@ const _AsyncSelect = <
 ) => {
   const [open, setOpen] = useState(props.open);
 
-  const {
-    options,
-    setQuery,
-    fetching,
-    pending,
-    searchPlaceholder,
-    availableSearch,
-  } = useAsyncSelect<V, SomeValues, Mode, ShowSearch>({
-    fetchOnInit,
-    fetchFn,
-    minQueryLength,
-    debounceTimeout,
-    showSearch,
-    open,
-    filterOption: !!filterOption,
-  });
+  const { options, setQuery, fetching, searchPlaceholder, availableSearch } =
+    useAsyncSelect<V, SomeValues, Mode, ShowSearch>({
+      fetchOnInit,
+      fetchFn,
+      minQueryLength,
+      debounceTimeout,
+      showSearch,
+      open,
+      filterOption: !!filterOption,
+    });
 
-  const loading = showSearch ? fetching : pending || fetching;
+  const loading = showSearch ? fetching : fetchOnInit && fetching;
   const placeholder = _searchPlaceholder ?? searchPlaceholder;
 
   const handleOnDropdownVisibleChange = useCallback(

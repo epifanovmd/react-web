@@ -42,8 +42,7 @@ export const useAsyncSelect = <
 }: IUseAsyncSelectOptions<V, SomeValues, Mode, ShowSearch>) => {
   const [query, setQuery] = useDebouncedState("", debounceTimeout);
   const [options, setOptions] = useState<TSelectOption<V, SomeValues>[]>([]);
-  const [pending, setPending] = useState(true);
-  const [fetching, setFetching] = useState(false);
+  const [fetching, setFetching] = useDebouncedState(false, debounceTimeout);
 
   const searchQuery = query.trim();
   const availableSearchLength = searchQuery.length >= minQueryLength;
@@ -65,9 +64,8 @@ export const useAsyncSelect = <
 
       setOptions(options);
       setFetching(false);
-      setPending(false);
     },
-    [fetchFn],
+    [fetchFn, setFetching],
   );
 
   useEffect(() => {
@@ -95,7 +93,6 @@ export const useAsyncSelect = <
 
   return {
     options,
-    pending,
     fetching,
     clear,
     query,

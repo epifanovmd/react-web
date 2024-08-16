@@ -80,20 +80,20 @@ export interface ISelectProps<
     Mode
   > | null;
   allowClear?: AllowClear;
-  onChange?: AllowClear extends undefined
+  onChange?: AllowClear extends true
     ? (
-        value: TResolveSelectValue<
-          LabelInValue extends true ? TSelectValue<V> : V,
-          Mode
-        >,
-        option: TOptionWithMode<TSelectOption<V, SomeValues>, Mode>,
-      ) => void
-    : (
         value?: TResolveSelectValue<
           LabelInValue extends true ? TSelectValue<V> : V,
           Mode
         >,
         option?: TOptionWithMode<TSelectOption<V, SomeValues>, Mode>,
+      ) => void
+    : (
+        value: TResolveSelectValue<
+          LabelInValue extends true ? TSelectValue<V> : V,
+          Mode
+        >,
+        option: TOptionWithMode<TSelectOption<V, SomeValues>, Mode>,
       ) => void;
   ref?: React.LegacyRef<ISelectRef>;
 }

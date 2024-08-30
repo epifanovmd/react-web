@@ -56,7 +56,7 @@ export const useAsyncSelect = <
   }, [open]);
 
   const fetchOptions = useCallback(
-    async (q: string = "") => {
+    async (q = "") => {
       setOptions([]);
       setFetching(true);
 

@@ -118,4 +118,5 @@ export interface IAsyncSelectProps<
   searchPlaceholder?: string;
   loadingPlaceholder?: string;
   fetchOnInit?: boolean;
+  defaultOptions?: TSelectOption<V, SomeValues>[];
 }

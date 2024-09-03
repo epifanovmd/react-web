@@ -29,6 +29,7 @@ const _AsyncSelect = <
     fetchOnInit,
     filterOption,
     notFoundContent: _notFoundContent,
+    defaultOptions,
     ...props
   }: IAsyncSelectProps<
     V,
@@ -51,6 +52,7 @@ const _AsyncSelect = <
       showSearch,
       open,
       filterOption: !!filterOption,
+      defaultOptions,
     });
 
   const loading = showSearch ? fetching : fetchOnInit && fetching;

@@ -24,6 +24,7 @@ export interface IUseAsyncSelectOptions<
   searchPlaceholder?: string;
   open?: boolean;
   filterOption?: boolean;
+  defaultOptions?: TSelectOption<V, SomeValues>[];
 }
 
 export const useAsyncSelect = <
@@ -39,9 +40,11 @@ export const useAsyncSelect = <
   showSearch,
   open,
   filterOption,
+  defaultOptions = [],
 }: IUseAsyncSelectOptions<V, SomeValues, Mode, ShowSearch>) => {
   const [query, setQuery] = useDebouncedState("", debounceTimeout);
-  const [options, setOptions] = useState<TSelectOption<V, SomeValues>[]>([]);
+  const [options, setOptions] =
+    useState<TSelectOption<V, SomeValues>[]>(defaultOptions);
   const [fetching, setFetching] = useDebouncedState(false, debounceTimeout);
 
   const searchQuery = query.trim();
@@ -51,12 +54,24 @@ export const useAsyncSelect = <
   useEffect(() => {
     if (open !== undefined && !open && showSearch) {
       setQuery("");
+      setOptions(defaultOptions);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const fetchOptions = useCallback(
     async (q = "") => {
+      if (defaultOptions) {
+        const filteredOptions = defaultOptions.filter(item =>
+          item.label.toLowerCase().includes(q.toLowerCase()),
+        );
+
+        if (filteredOptions.length > 0) {
+          setOptions(filteredOptions);
+
+          return;
+        }
+      }
       setOptions([]);
       setFetching(true);
 
@@ -65,11 +80,11 @@ export const useAsyncSelect = <
       setOptions(options);
       setFetching(false);
     },
-    [fetchFn, setFetching],
+    [defaultOptions, fetchFn, setFetching],
   );
 
   useEffect(() => {
-    if (fetchOnInit) {
+    if (fetchOnInit && !defaultOptions) {
       fetchOptions().then();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,14 +94,14 @@ export const useAsyncSelect = <
     if (availableSearch) {
       fetchOptions(searchQuery).then();
     } else {
-      setOptions([]);
+      setOptions(defaultOptions);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   const clear = useCallback(() => {
-    setOptions([]);
-  }, []);
+    setOptions(defaultOptions);
+  }, [defaultOptions]);
 
   const searchPlaceholder = useMemo(
     () => `Поиск от ${selectSearchPlaceholder(minQueryLength)} символов`,
